@@ -1,0 +1,11 @@
+FROM linuxserver/openssh-server
+
+RUN apk add git \
+ && mkdir -p /opt/git/project.git \
+ && cd /opt/git/project.git \
+ && git init --bare \
+ && chown -R 1000:1000 /opt/git
+
+ENV USER_NAME=git \
+    PUID=1000 \
+    PGID=1000

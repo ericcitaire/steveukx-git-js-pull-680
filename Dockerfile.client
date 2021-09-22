@@ -1,0 +1,16 @@
+FROM node:lts
+
+RUN mkdir -p /app /app/test \
+ && cd /app \
+ && npm install mocha
+
+WORKDIR /app
+ENV PATH=/app/node_modules/mocha/bin:$PATH \
+    GIT_AUTHOR_EMAIL=me@example.com \
+    GIT_AUTHOR_NAME=Me \
+    GIT_COMMITTER_EMAIL=me@example.com \
+    GIT_COMMITTER_NAME=Me
+
+COPY ssh-config /root/.ssh/config
+
+RUN mkdir -p /root/.ssh/sockets
