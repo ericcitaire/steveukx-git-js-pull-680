@@ -28,16 +28,15 @@ async function run(cwd, cmd, ...args) {
 
 describe('if underlying ssh connection is configured to `keepalive`', function() {
     it('should fire `close` event', async function() {
-      const sshConfig = await run('/tmp', 'ssh', '-G', 'localhost');
+      const sshConfig = await run('/tmp', 'ssh', '-G', 'git-server');
       assert(sshConfig.stdOut.includes('ControlMaster auto\n'.toLowerCase()));
       assert(sshConfig.stdOut.includes('ControlPersist 600\n'.toLowerCase()));
 
-      const clone = await run('/tmp', 'git', 'clone', 'ssh://git@localhost:2222/opt/git/project.git');
+      const clone = await run('/tmp', 'git', 'clone', 'ssh://git@git-server:2222/opt/git/project.git');
       assert.equal(clone.exitCode, 0);
       assert.equal(clone.stdOut, '');
       assert.equal(clone.stdErr,
         "Cloning into 'project'...\n" +
-        ",Warning: Permanently added '[localhost]:2222' (ECDSA) to the list of known hosts.\r\n" +
         ',warning: You appear to have cloned an empty repository.\n');
 
       await run('/tmp/project', 'touch', 'README.md');
@@ -60,7 +59,7 @@ describe('if underlying ssh connection is configured to `keepalive`', function()
       assert.equal(push.exitCode, 0);
       assert.equal(push.stdOut, 'Branch master set up to track remote branch master from origin.\n');
       assert.equal(push.stdErr,
-        'To ssh://localhost:2222/opt/git/project.git\n' +
+        'To ssh://git-server:2222/opt/git/project.git\n' +
         ' * [new branch]      master -> master\n');
 
       const pull = await run('/tmp/project', 'git', 'fetch', 'origin');
